@@ -1,0 +1,35 @@
+<project name="logbot" default="all" basedir=".">
+	<description>
+		Build with "ant jar"
+		Run with "java -jar logbot.jar {config_file.cfg}" (where the 
+			config file can be any file you want realative to the .jar)
+	</description>
+
+	<property name="src" location="src" />
+	<property name="build" location="build" />
+	<property name="classpath" location="lib/*" />
+
+	<target name="init">
+		<mkdir dir="${build}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="${src}" destdir="${build}"/>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar jarfile="logbot.jar" basedir="${build}">
+			<manifest>
+				<attribute name="Main-Class" value="com.logbot.Logbot"/>
+			</manifest>
+		</jar>
+
+		<delete dir="${build}"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}"/>
+	</target>
+
+	<target name="all" depends="compile,clean" />
+</project>

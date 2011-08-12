@@ -1,0 +1,10 @@
+# Junk files
+*~
+*.DS_Store
+
+# All configuration files
+*.cfg
+
+# build stuf
+build/*
+logbot.jar

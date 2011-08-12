@@ -1,0 +1,25 @@
+#
+# Logbot configuration
+#
+
+# Connection information
+host: irc.freenode.net
+port: 6667
+user: logbot
+name: My Name
+nick: botnick
+pass: myPass123
+
+# NetCom settings
+netcom_port: 55555
+netcom_user:
+netcom_pass:
+
+# log settings
+# make sure you do a double back-slash for the path if you're using windows
+logpath: C:\\logs\\freenode\\
+errorlog: C:\\logs\\freenode.error.log
+network_name: freenode
+
+# Join settings
+channelfile: freenode.channels.cfg
