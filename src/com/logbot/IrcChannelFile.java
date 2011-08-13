@@ -22,29 +22,8 @@ public class IrcChannelFile {
 	private String filename;
 
 	/*
-	 * Static singleton instance
-	 */
-	private static IrcChannelFile cf = null;
-
-	/*
-	 * Instance new'er
-	 */
-	public static IrcChannelFile newInstance(String filename) throws IOException {
-		IrcChannelFile.cf = new IrcChannelFile(filename);
-
-		return IrcChannelFile.cf;
-	}
-
-	/*
-	 * Instance getter
-	 */
-	public static IrcChannelFile getInstance() {
-		return IrcChannelFile.cf;
-	}
-
-	/*
 	 * Load in the file (Construtor)
-	 * @param ???
+	 * @param String filename
 	 */
 	public IrcChannelFile(String filename) throws IOException {
 		this.filename = filename;

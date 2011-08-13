@@ -41,8 +41,11 @@ public class Logbot {
 		IrcMessage msg;
 		String[] queue;
 
+		IrcChannelFile chanFile;
+
+		// Start up our manager objects
 		try {
-			IrcChannelFile.newInstance(IrcConfig.channelFile);
+			chanFile = new IrcChannelFile(IrcConfig.channelFile);
 		}
 		catch (Exception e) {
 			error(e.getMessage());
@@ -51,8 +54,6 @@ public class Logbot {
 		// Register events 
 		event.register(new ModulePing());
 		event.register(new ModuleId());
-		event.register(new ModuleChanLogger());
-		event.register(new ModuleManage());
 		// End Register events
 
 		// start our NetCom thread
