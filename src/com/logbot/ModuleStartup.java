@@ -25,7 +25,10 @@ public class ModuleStartup implements ModuleInterface {
 	 * Make sure the file stays up to date
 	 */
 	public String[] run(IrcMessage m) {
-		if (m.command.equals("NOTICE") && m.argument.startsWith("You are now identified")) {
+		if (m.command.equals("NOTICE") && ( // I know this is ugly, but I may want to add some more later.
+				m.argument.startsWith("You are now identified") || 
+				m.argument.startsWith("You are successfully")
+		)) {
 			String joins = chanFile.getJoins();
 
 			if (joins.length() > 0) {
