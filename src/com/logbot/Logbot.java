@@ -35,25 +35,19 @@ public class Logbot {
 			error(e.getMessage());
 		}
 
-		// Create our connection object
+		// Start up our manager objects
 		IrcConnection server = new IrcConnection(IrcConfig.host, IrcConfig.port);
 		EventManager event = new EventManager();
+		IrcChannelManager chanManager = new IrcChannelManager();
+		IrcChannelFile chanFile = new IrcChannelFile(IrcConfig.channelFile);
 		IrcMessage msg;
 		String[] queue;
-
-		IrcChannelFile chanFile;
-
-		// Start up our manager objects
-		try {
-			chanFile = new IrcChannelFile(IrcConfig.channelFile);
-		}
-		catch (Exception e) {
-			error(e.getMessage());
-		}
 
 		// Register events 
 		event.register(new ModulePing());
 		event.register(new ModuleId());
+		event.register(new ModuleChanManagerHelper(chanManager));
+		event.register(new ModuleCommand(chanManager, chanFile));
 		// End Register events
 
 		// start our NetCom thread

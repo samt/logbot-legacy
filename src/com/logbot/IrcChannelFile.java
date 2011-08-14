@@ -25,29 +25,34 @@ public class IrcChannelFile {
 	 * Load in the file (Construtor)
 	 * @param String filename
 	 */
-	public IrcChannelFile(String filename) throws IOException {
+	public IrcChannelFile(String filename) {
 		this.filename = filename;
 
-		BufferedReader reader = new BufferedReader(new FileReader(this.filename));
-		String line;
-		String[] parts;
-		Boolean irclogEnabled;
-		IrcChannelConfig ccfg;
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(this.filename));
+			String line;
+			String[] parts;
+			Boolean irclogEnabled;
+			IrcChannelConfig ccfg;
 
-		while ((line = reader.readLine()) != null) {
-			parts = line.split(":");
-			irclogEnabled = parts[2].trim().equals("1") ? true : false;
+			while ((line = reader.readLine()) != null) {
+				parts = line.split(":");
+				irclogEnabled = parts[2].trim().equals("1") ? true : false;
 
-			ccfg = new IrcChannelConfig(parts[0], parts[1]).setIrclogEnabled( parts[2].equals("1") ? true : false );
+				ccfg = new IrcChannelConfig(parts[0], parts[1]).setIrclogEnabled( parts[2].equals("1") ? true : false );
 
-			if (parts.length > 3) {
-				ccfg.setKey(parts[3]);
+				if (parts.length > 3) {
+					ccfg.setKey(parts[3]);
+				}
+
+				this.add(ccfg);
 			}
 
-			this.add(ccfg);
+			reader.close();
 		}
-
-		reader.close();
+		catch (IOException e) {
+			Logbot.error(e.getMessage());
+		}
 	}
 
 	/*
