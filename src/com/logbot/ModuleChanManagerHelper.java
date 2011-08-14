@@ -49,10 +49,23 @@ public class ModuleChanManagerHelper implements ModuleInterface {
 		else if (m.command.equals("NICK")) {
 			this.chanManager.changeNick(m.nick, m.argument);
 		}
-//		else if (m.command.equals("MODE")) {
-//			// This really does not belong here, I am creating a new module 
-//			// just for keeping the MODE updated.
-//		}
+		else if (m.command.equals("MODE")) {
+			String[] parts = m.target.split("\\s");
+			
+			if (parts.length > 2) {
+				return new String[] {"WHOIS " + parts[2]};
+			}
+		}
+		else if (m.command.equals("319")) {
+			String nick = m.target.substring(m.target.indexOf(" ") + 1);
+			String[] parts = m.argument.split("\\s");
+			char prefix;
+
+			for (int i = 0; i < parts.length; i++) {
+				prefix = IrcUser.getPrefix(parts[i]);
+				this.chanManager.updatePrefix(IrcUser.stripPrefix(parts[i]), nick, prefix);
+			}
+		}
 		else if (m.command.equals("353")) {
 			String[] users = m.argument.split("\\s");
 			String chan = m.target.substring(m.target.indexOf("#"));
