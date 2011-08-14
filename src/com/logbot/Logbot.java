@@ -46,8 +46,12 @@ public class Logbot {
 		// Register events 
 		event.register(new ModulePing());
 		event.register(new ModuleId());
+		event.register(new ModuleInvite(chanManager, chanFile));
+		event.register(new ModuleLogger(chanManager));
 		event.register(new ModuleChanManagerHelper(chanManager));
 		event.register(new ModuleCommand(chanManager, chanFile));
+		event.register(new ModuleStartup(chanFile));
+		event.register(new ModuleCtcp());
 		// End Register events
 
 		// start our NetCom thread

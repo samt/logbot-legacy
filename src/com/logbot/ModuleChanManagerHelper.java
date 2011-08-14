@@ -43,6 +43,9 @@ public class ModuleChanManagerHelper implements ModuleInterface {
 		else if (m.command.equals("QUIT")) {
 			this.chanManager.userQuit(m.nick);
 		}
+		else if (m.command.equals("KICK") && m.target.substring(m.target.indexOf(" ") + 1).equals(IrcConfig.nick)) {
+			this.chanManager.part(m.target.substring(0, m.target.indexOf(" ")));
+		}
 		else if (m.command.equals("KICK")) {
 			this.chanManager.userPart(m.target.substring(0, m.target.indexOf(" ")), m.target.substring(m.target.indexOf(" ") + 1));
 		}

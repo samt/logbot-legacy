@@ -37,7 +37,7 @@ public class ModuleCommand implements ModuleInterface {
 	
 		// This is done via PRIVMSG
 		if (m.command.equals("PRIVMSG")) {
-		
+
 			// First check for !irclog (more common)
 			if (m.argument.toUpperCase().startsWith("!IRCLOG") && this.chanFile.get(m.target).isIrclogEnabled()) {
 				IrcChannelConfig chanCfg = chanFile.get(m.target);
@@ -47,16 +47,20 @@ public class ModuleCommand implements ModuleInterface {
 					// Replace key if needed
 					if (chanCfg.newKeyRequired()) {
 						chanCfg.setKey(new BigInteger(45, new Random()).toString(32));
+
+						chanFile.save(); // Make sure our new key gets in there
 					}
+
 					url = url + "?k=" + chanCfg.getKey();
-					
-					IrcLogger.write(m.target, "<" + IrcConfig.nick + "> " + url);
-					return new String[] {"PRIVMSG " + m.target + " :" + url};
 				}
+
+				IrcLogger.write(m.target, "<" + IrcConfig.nick + "> " + url);
+				return new String[] {"PRIVMSG " + m.target + " :" + url};
 			}
 
 			// Time for the !set command
 			else if (m.argument.toUpperCase().startsWith("!SET") && this.chanManager.isOperator(m.target, m.nick)) {
+				return new String[] {"PRIVMSG " + m.target + " :You are trying to set something."};
 			}
 		}
 

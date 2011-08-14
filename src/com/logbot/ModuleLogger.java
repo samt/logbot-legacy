@@ -11,14 +11,14 @@ import java.util.*;
 
 public class ModuleLogger implements ModuleInterface {
 	/*
-	 * We need two managers
+	 * Channel Manager
 	 */
 	private IrcChannelManager chanManager;
 
 	/*
 	 */
-	public ModuleLogger(IrcChannelManager m) {
-		this.chanManager = m;
+	public ModuleLogger(IrcChannelManager chanManager) {
+		this.chanManager = chanManager;
 	}
 
 	/*
@@ -27,21 +27,31 @@ public class ModuleLogger implements ModuleInterface {
 	 */
 	public String[] run(IrcMessage m) {
 		if (m.command.equals("PRIVMSG")) {
+			IrcLogger.write(m.target, "<" + this.chanManager.getFullNick(m.target, m.nick) + "> " + m.argument);
 		}
 		else if (m.command.equals("JOIN")) {
-			this.chanManager.join(m.argument);
-		}
-		else if (m.command.equals("JOIN")) {
-			this.chanManager.userJoin(m.argument, m.nick);
+			IrcLogger.write(m.argument, "=-= " + m.nick + " has joined " + m.argument);
 		}
 		else if (m.command.equals("PART")) {
-			this.chanManager.userPart(m.target, m.nick);
+			IrcLogger.write(m.target, "=-= " + m.nick + " has left " + m.target);
 		}
 		else if (m.command.equals("QUIT")) {
-			this.chanManager.userQuit(m.nick);
+			String[] chans = this.chanManager.getChannelsUserMemeber(m.nick);
+
+			for (int i = 0; i < chans.length; i++) {
+				IrcLogger.write(chans[i], "=-= " + m.nick + " has left " + IrcConfig.networkName + " (" + m.argument + ")");
+			}
 		}
 		else if (m.command.equals("KICK")) {
-			this.chanManager.userPart(m.target.substring(0, m.target.indexOf(" ")), m.target.substring(m.target.indexOf(" ") + 1));
+			IrcLogger.write(m.target.substring(0, m.target.indexOf(" ")), 
+				"=-= " + m.target.substring(m.target.indexOf(" ") + 1) + " has been booted by " + m.nick);	
+		}
+		else if (m.command.equals("NICK")) {
+			String[] chans = this.chanManager.getChannelsUserMemeber(m.nick);
+
+			for (int i = 0; i < chans.length; i++) {
+				IrcLogger.write(chans[i], "=-= " + m.nick + " is now know as " + m.argument);
+			}
 		}
 
 		return null;
