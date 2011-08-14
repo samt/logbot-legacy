@@ -5,6 +5,6 @@
 # All configuration files
 *.cfg
 
-# build stuf
+# build stuff
 build/*
 logbot.jar
