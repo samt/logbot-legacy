@@ -127,6 +127,11 @@ public class IrcChannel {
 		return null;
 	}
 
+/*	// For debugung
+	public IrcUser[] getUsers() {
+		return (IrcUser[]) this.users.toArray(new IrcUser[0]);
+	}*/
+
 	/*
 	 * Equals
 	 * @return boolean

@@ -14,7 +14,7 @@ public class IrcChannelFile {
 	/*
 	 * Instances of IrcChannelConfig
 	 */
-	private ArrayList<IrcChannelConfig> chans = new ArrayList();
+	private Hashtable chans = new Hashtable();
 
 	/*
 	 * Filename of our JSON file
@@ -60,8 +60,7 @@ public class IrcChannelFile {
 	 * @param IrcChannelConfig c
 	 */
 	public void add(IrcChannelConfig c) {
-		this.delete(c.toString());
-		this.chans.add(c);
+		this.chans.put(c.toString(), c);
 	}
 
 	/*
@@ -69,12 +68,7 @@ public class IrcChannelFile {
 	 * This is a cool trick... IrcChannelConfig has a toString() method to accomodate this
 	 */
 	public void delete(String name) {
-		for (int i = 0; i < this.chans.size(); i++) {
-			if ( ((IrcChannelConfig) this.chans.get(i)).toString().equals(name) ) {
-				this.chans.remove(i);
-				break;
-			}
-		}
+		this.chans.remove(name);
 	}
 
 	/*
@@ -83,38 +77,26 @@ public class IrcChannelFile {
 	 * @return IrcChannelConfig
 	 */
 	public IrcChannelConfig get(String name) {
-		IrcChannelConfig ccfg = null;
-
-		for (int i = 0; i < this.chans.size(); i++) {
-			ccfg = (IrcChannelConfig) this.chans.get(i);
-
-			if ( !ccfg.toString().equals(name) ) {
-				break;
-			}
-
-			ccfg = null;
-		}
-
-		return ccfg;
+		return (IrcChannelConfig) this.chans.get(name);
 	}
 
 	/*
 	 * Get join arguments 
 	 */
 	public String getJoins() {
-		Iterator chanIterator = this.chans.iterator();
+		Enumeration e = this.chans.keys();
 		IrcChannelConfig c;
 		StringBuffer buffer = new StringBuffer(1024);
-
-		while(chanIterator.hasNext()) {
-			c = (IrcChannelConfig) chanIterator.next();
+		
+		while(e.hasMoreElements()) {
+			c = (IrcChannelConfig) this.chans.get(e.nextElement());
 			buffer.append(c.toString());
 
 			if (!c.getJoinPass().equals("")) {
 				buffer.append(" " + c.getJoinPass());
 			}
 
-			if (chanIterator.hasNext()) {
+			if (e.hasMoreElements()) {
 				buffer.append(",");
 			}
 		}
@@ -125,13 +107,13 @@ public class IrcChannelFile {
 	/*
 	 * Save the modified objects into the file
 	 */
-	public void save() throws IOException {
+	public void save() {
 		StringBuffer buffer = new StringBuffer(1024);
 
-		Iterator chanIterator = this.chans.iterator();
+		Enumeration enu = this.chans.keys();
 		IrcChannelConfig c;
-		while(chanIterator.hasNext()) {
-			c = (IrcChannelConfig) chanIterator.next();
+		while(enu.hasMoreElements()) {
+			c = (IrcChannelConfig) this.chans.get(enu.nextElement());
 
 			buffer.append(c.toString() + ":");
 			buffer.append(c.getJoinPass() + ":");
@@ -140,8 +122,13 @@ public class IrcChannelFile {
 			buffer.append("\n");
 		}
 
-		BufferedWriter out = new BufferedWriter(new FileWriter(this.filename));
-		out.write(buffer.toString());
-		out.close();
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(this.filename));
+			out.write(buffer.toString());
+			out.close();
+		}
+		catch (IOException e) {
+			Logbot.errorLog("Could not write to config file: " + e.getMessage());
+		}
 	}
 }
