@@ -39,9 +39,9 @@ public class IrcChannelConfig {
 
 	/*
 	 * Sorta-const 
-	 * 20 seconds for debug purposes
+	 * 12 hours
 	 */
-	public static final int KEY_EXP = 20000;
+	public static final int KEY_EXP = 43200000;
 
 	/*
 	 * Only need the name
