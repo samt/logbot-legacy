@@ -58,9 +58,58 @@ public class ModuleCommand implements ModuleInterface {
 				return new String[] {"PRIVMSG " + m.target + " :" + url};
 			}
 
-			// Time for the !set command
-			else if (m.argument.toUpperCase().startsWith("!SET") && this.chanManager.isOperator(m.target, m.nick)) {
-				return new String[] {"PRIVMSG " + m.target + " :You are trying to set something."};
+			boolean isOp = false;
+			if(m.argument.toUpperCase().startsWith("!")) {
+				isOp = this.chanManager.isOperator(m.target, m.nick) ? true : false;
+			}
+
+			int index = m.argument.indexOf(" ");
+			String value = (index > -1) ? m.argument.substring(index) : "";
+
+			if (isOp && (m.argument.toUpperCase().startsWith("!SETPRIVATE") || m.argument.toUpperCase().startsWith("!ENABLEIRCLOG"))) {
+				String[] result;
+				value = value.toUpperCase().trim();
+
+				if (value.equals("TRUE") || value.equals("1") || value.equals("YES")) {
+					IrcChannelConfig cCfg = chanFile.get(m.target);
+					
+					if (m.argument.toUpperCase().startsWith("!SETPRIVATE")) {
+						cCfg.setKey(new BigInteger(45, new Random()).toString(32));
+						result = new String[] {"PRIVMSG " + m.target + " :" + m.nick + ": Channel is now being privately logged."};
+					}
+					else {
+						cCfg.setIrclogEnabled(true);
+						result = new String[] {"PRIVMSG " + m.target + " :" + m.nick + ": !irclog command has been enabled."};
+					}
+	
+					chanFile.save();
+				}
+				else if (value.equals("FALSE") || value.equals("0") || value.equals("NO")) {
+					IrcChannelConfig cCfg = chanFile.get(m.target);
+
+					if (m.argument.toUpperCase().startsWith("!SETPRIVATE")) {
+						cCfg.setKey("");
+						result = new String[] {"PRIVMSG " + m.target + " :" + m.nick + ": Channel is now being publicly logged."};
+					}
+					else {
+						cCfg.setIrclogEnabled(false);
+						result = new String[] {"PRIVMSG " + m.target + " :" + m.nick + ": !irclog command has been disabled."};
+					}
+	
+					chanFile.save();
+				}
+				else {
+					result = new String[] {"PRIVMSG " + m.target + " :" + m.nick + ": Invalid value, please use 'true' or 'false'"};
+				}
+
+				return result;
+			}
+			else if (isOp && m.argument.toUpperCase().startsWith("!SETJOINPASS")) {
+				IrcChannelConfig cCfg = chanFile.get(m.target);
+				cCfg.setJoinPass(value);
+				chanFile.save();
+
+				return new String[] {"PRIVMSG " + m.target + " :" + m.nick + ": Join password set."};
 			}
 		}
 

@@ -60,7 +60,9 @@ public class IrcChannelFile {
 	 * @param IrcChannelConfig c
 	 */
 	public void add(IrcChannelConfig c) {
-		this.chans.put(c.toString(), c);
+		if (!this.chans.containsKey(c.toString())) {
+			this.chans.put(c.toString(), c);
+		}
 	}
 
 	/*

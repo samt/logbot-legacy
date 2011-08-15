@@ -46,10 +46,10 @@ public class IrcMessage {
 		}
 		else if (msg.indexOf(':') > 0) {
 			this.target = msg.substring(0, msg.indexOf(':')).trim();
-			this.argument = msg.substring(msg.indexOf(':') + 1);
+			this.argument = msg.substring(msg.indexOf(':') + 1).trim();
 		}
 		else {
-			this.argument = msg.substring(1);
+			this.argument = msg.substring(1).trim();
 		}
 
 		// Now we need to extract items such as the nickname and host
