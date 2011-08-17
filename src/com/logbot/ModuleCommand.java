@@ -41,7 +41,7 @@ public class ModuleCommand implements ModuleInterface {
 			// First check for !irclog (more common)
 			if (m.argument.toUpperCase().startsWith("!IRCLOG") && this.chanFile.get(m.target).isIrclogEnabled()) {
 				IrcChannelConfig chanCfg = chanFile.get(m.target);
-				String url = new String("http://logbot.com/" + IrcConfig.networkName + "/" + m.target + "/");
+				String url = new String("http://logbot.com/" + IrcConfig.networkName + "/" + m.target.replaceAll("\\#", "%23") + "/");
 
 				if (!chanCfg.getKey().equals("")) {
 					// Replace key if needed
